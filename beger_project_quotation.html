@@ -6,6 +6,9 @@
 <title>Beger | ระบบขอราคางานโครงการ</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Kanit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 <style>
   :root {
     --red: #C8102E;
@@ -401,7 +404,7 @@
     background: white;
     border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
-    overflow: hidden;
+    overflow-x: auto;
   }
   .records-table {
     width: 100%;
@@ -573,6 +576,7 @@
       <span>รายการทั้งหมด</span>
     </button>
   </div>
+  <span id="syncStatus" style="font-size:12px;color:rgba(255,255,255,0.6)">● กำลังเชื่อมต่อ...</span>
 </nav>
 
 <!-- ========== PAGE: FORM ========== -->
@@ -895,11 +899,13 @@
       <thead>
         <tr>
           <th>#</th>
+          <th>สาขา / PC</th>
           <th>ชื่อโครงการ</th>
           <th>ประเภท</th>
-          <th>สาขา / PC</th>
           <th>มูลค่าสี (฿)</th>
-          <th>วันที่บันทึก</th>
+          <th>ไฟล์แนบ</th>
+          <th>หมายเหตุ</th>
+          <th>วันที่</th>
           <th></th>
         </tr>
       </thead>
@@ -927,15 +933,45 @@
 </div>
 
 <script>
+// ========== FIREBASE INIT ==========
+const firebaseConfig = {
+  apiKey: "AIzaSyA4VDiXhsiyVisXTLHJDOvI6kFO6jEBgDo",
+  authDomain: "beger-eqt.firebaseapp.com",
+  databaseURL: "https://beger-eqt-default-rtdb.firebaseio.com",
+  projectId: "beger-eqt",
+  storageBucket: "beger-eqt.firebasestorage.app",
+  messagingSenderId: "818689383502",
+  appId: "1:818689383502:web:213929597a777e41c2b71f"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const storage = firebase.storage();
+const REF = db.ref('quotations');
+
 // ========== DATA LAYER ==========
-const DB_KEY = 'beger_project_quotations';
-function getRecords() {
-  try { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
-  catch { return []; }
-}
-function saveRecords(data) {
-  localStorage.setItem(DB_KEY, JSON.stringify(data));
-}
+let _records = [];
+
+// Real-time listener — อัปเดตทุกครั้งที่มีการเปลี่ยนแปลง
+REF.orderByChild('submittedAt').on('value', snap => {
+  _records = [];
+  snap.forEach(child => {
+    _records.unshift({ ...child.val(), _key: child.key });
+  });
+  if (document.getElementById('page-records').classList.contains('active')) {
+    renderStats();
+    renderRecords();
+  }
+  // update status indicator
+  const si = document.getElementById('syncStatus');
+  if (si) { si.textContent = '● เชื่อมต่อแล้ว'; si.style.color = '#059669'; }
+});
+
+REF.on('cancel', () => {
+  const si = document.getElementById('syncStatus');
+  if (si) { si.textContent = '● ไม่ได้เชื่อมต่อ'; si.style.color = '#DC2626'; }
+});
+
+function getRecords() { return _records; }
 
 // ========== PAGE SWITCHING ==========
 function showPage(name) {
@@ -1020,11 +1056,17 @@ function submitForm() {
   if (!data.projectName) { showToast('กรุณากรอกชื่อโครงการ', 'error'); return; }
   if (!data.branchName || !data.pcName) { showToast('กรุณากรอกชื่อสาขาและชื่อ PC', 'error'); return; }
 
-  const records = getRecords();
-  records.unshift(data);
-  saveRecords(records);
-  showToast('บันทึกข้อมูลเรียบร้อยแล้ว ✓', 'success');
-  clearForm();
+  const btn = document.querySelector('.btn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'กำลังบันทึก...'; }
+
+  REF.push(data).then(() => {
+    showToast('บันทึกข้อมูลเรียบร้อยแล้ว ✓', 'success');
+    clearForm();
+    if (btn) { btn.disabled = false; btn.innerHTML = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> บันทึกข้อมูล'; }
+  }).catch(err => {
+    showToast('เกิดข้อผิดพลาด: ' + err.message, 'error');
+    if (btn) { btn.disabled = false; btn.innerHTML = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> บันทึกข้อมูล'; }
+  });
 }
 
 // ========== CLEAR FORM ==========
@@ -1074,37 +1116,56 @@ function renderRecords() {
     return;
   }
 
-  const allRecords = getRecords();
   tbody.innerHTML = records.map((r, i) => {
-    const realIdx = allRecords.findIndex(x => x.id === r.id);
     const d = new Date(r.submittedAt);
     const dateStr = d.toLocaleDateString('th-TH', { day:'2-digit', month:'short', year:'numeric' });
     const paintVal = parseFloat(r.paintValue) || 0;
-    const addr = [r.addressSub, r.addressProv].filter(Boolean).join(', ');
+    const key = r._key;
+
+    // file attachment cell
+    const fileCell = r.fileURL
+      ? `<a href="${r.fileURL}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;color:var(--red);font-size:12.5px;font-weight:600;text-decoration:none;padding:4px 10px;border:1.5px solid var(--red-mid);border-radius:6px;background:var(--red-light)">
+           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:13px;height:13px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+           ${r.fileName||'ไฟล์แนบ'}</a>
+         <button onclick="removeFile('${key}')" title="ลบไฟล์" style="background:none;border:none;cursor:pointer;color:var(--gray-400);font-size:16px;line-height:1;padding:0 0 0 4px">×</button>`
+      : `<label style="display:inline-flex;align-items:center;gap:5px;cursor:pointer;padding:5px 10px;border:1.5px dashed var(--gray-300);border-radius:6px;font-size:12px;color:var(--gray-500);background:var(--gray-50);transition:all 0.2s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--gray-300)';this.style.color='var(--gray-500)'">
+           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:13px;height:13px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+           Upload
+           <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.png" style="display:none" onchange="uploadFile(event,'${key}')">
+         </label>`;
+
+    // note cell
+    const noteVal = r.note || '';
+    const noteCell = `<div style="position:relative">
+      <textarea onblur="saveNote('${key}',this.value)" style="width:180px;min-height:38px;resize:vertical;font-size:12.5px;padding:6px 8px;border:1.5px solid var(--gray-200);border-radius:6px;font-family:inherit;background:var(--gray-50);color:var(--gray-900)" placeholder="พิมพ์หมายเหตุ...">${noteVal}</textarea>
+    </div>`;
+
     return `<tr>
       <td style="color:var(--gray-400);font-size:12px">${i+1}</td>
       <td>
-        <div class="project-name">${r.projectName || '-'}</div>
-        <div class="project-meta">${addr || 'ไม่ระบุที่อยู่'}</div>
-      </td>
-      <td><span class="proj-type-chip">${r.projectType || '-'}</span></td>
-      <td>
-        <div style="font-size:13px;font-weight:500">${r.branchName || '-'}</div>
+        <div style="font-size:13px;font-weight:600;color:var(--gray-900)">${r.branchName || '-'}</div>
         <div class="project-meta">${r.pcName || ''} ${r.pcPhone ? '| '+r.pcPhone : ''}</div>
       </td>
+      <td>
+        <div class="project-name">${r.projectName || '-'}</div>
+        <div class="project-meta">${[r.addressSub, r.addressProv].filter(Boolean).join(', ') || ''}</div>
+      </td>
+      <td><span class="proj-type-chip">${r.projectType || '-'}</span></td>
       <td style="font-weight:600;color:var(--red-dark)">${paintVal > 0 ? paintVal.toLocaleString('th-TH') : '-'}</td>
+      <td style="white-space:nowrap">${fileCell}</td>
+      <td>${noteCell}</td>
       <td class="date-cell">${dateStr}</td>
       <td style="white-space:nowrap">
-        <button class="btn btn-secondary btn-sm" onclick="showDetail(${realIdx})" style="margin-right:6px">ดูรายละเอียด</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteRecord(${realIdx})">ลบ</button>
+        <button class="btn btn-secondary btn-sm" onclick="showDetail('${key}')" style="margin-right:6px">รายละเอียด</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteRecord('${key}')">ลบ</button>
       </td>
     </tr>`;
   }).join('');
 }
 
 // ========== DETAIL MODAL ==========
-function showDetail(idx) {
-  const r = getRecords()[idx];
+function showDetail(key) {
+  const r = _records.find(x => x._key === key);
   if (!r) return;
   const d = new Date(r.submittedAt);
   const dateStr = d.toLocaleDateString('th-TH', { day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
@@ -1187,17 +1248,38 @@ function closeModalDirect() {
 }
 
 // ========== DELETE ==========
-function deleteRecord(idx) {
+function deleteRecord(key) {
   if (!confirm('ต้องการลบรายการนี้?')) return;
-  const records = getRecords();
-  records.splice(idx, 1);
-  saveRecords(records);
-  renderStats();
-  renderRecords();
-  showToast('ลบรายการเรียบร้อยแล้ว');
+  REF.child(key).remove()
+    .then(() => showToast('ลบรายการเรียบร้อยแล้ว'))
+    .catch(err => showToast('ลบไม่สำเร็จ: ' + err.message, 'error'));
 }
 
-// ========== EXPORT EXCEL ==========
+// ========== UPLOAD FILE ==========
+function uploadFile(event, key) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { showToast('ไฟล์ใหญ่เกิน 10MB', 'error'); return; }
+  showToast('กำลัง Upload...');
+  const ref = storage.ref(`quotation_files/${key}_${Date.now()}_${file.name}`);
+  ref.put(file).then(snap => snap.ref.getDownloadURL()).then(url => {
+    REF.child(key).update({ fileURL: url, fileName: file.name });
+    showToast('Upload สำเร็จ ✓', 'success');
+  }).catch(err => showToast('Upload ไม่สำเร็จ: ' + err.message, 'error'));
+}
+
+function removeFile(key) {
+  if (!confirm('ต้องการลบไฟล์แนบ?')) return;
+  REF.child(key).update({ fileURL: null, fileName: null });
+  showToast('ลบไฟล์แนบแล้ว');
+}
+
+// ========== SAVE NOTE ==========
+function saveNote(key, value) {
+  REF.child(key).update({ note: value });
+}
+
+
 function exportExcel() {
   const records = getRecords();
   if (!records.length) { showToast('ไม่มีข้อมูลสำหรับ Export', 'error'); return; }
