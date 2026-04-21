@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beger | ระบบขอราคางานโครงการ</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Kanit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --red: #C8102E;
+    --red-dark: #9B0C22;
+    --red-light: #F5E6E9;
+    --red-mid: #E8B4BC;
+    --gray-50: #FAFAFA;
+    --gray-100: #F4F4F5;
+    --gray-200: #E4E4E7;
+    --gray-300: #D1D1D6;
+    --gray-400: #A1A1AA;
+    --gray-500: #71717A;
+    --gray-700: #3F3F46;
+    --gray-900: #18181B;
+    --white: #FFFFFF;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.06);
+    --radius: 10px;
+    --radius-sm: 6px;
+    --radius-lg: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: var(--gray-100);
+    color: var(--gray-900);
+    min-height: 100vh;
+  }
+
+  /* ===== TOP NAVBAR ===== */
+  .navbar {
+    background: var(--red);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(200,16,46,0.3);
+  }
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-logo {
+    background: white;
+    color: var(--red);
+    font-family: 'Kanit', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    width: 44px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    letter-spacing: -0.5px;
+  }
+  .brand-title {
+    color: white;
+    font-family: 'Kanit', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+  .navbar-tabs {
+    display: flex;
+    gap: 4px;
+  }
+  .tab-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.75);
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .tab-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+  .tab-btn.active { background: rgba(255,255,255,0.22); color: white; }
+  .tab-btn svg { width: 15px; height: 15px; }
+
+  /* ===== MAIN CONTAINER ===== */
+  .container { max-width: 900px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  /* ===== PAGE HEADER ===== */
+  .page-header {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+    border-left: 5px solid var(--red);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .page-header-text h1 {
+    font-family: 'Kanit', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 4px;
+  }
+  .page-header-text p { font-size: 13.5px; color: var(--gray-500); }
+  .badge {
+    background: var(--red-light);
+    color: var(--red-dark);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--red-mid);
+  }
+
+  /* ===== SECTION CARD ===== */
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .card-header {
+    background: linear-gradient(135deg, var(--gray-50) 0%, white 100%);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--red-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-icon svg { width: 16px; height: 16px; color: var(--red); }
+  .card-header h2 {
+    font-family: 'Kanit', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray-900);
+  }
+  .section-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    background: var(--red);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .card-body { padding: 20px 22px; }
+
+  /* ===== FORM FIELDS ===== */
+  .form-grid { display: grid; gap: 14px; }
+  .form-grid-2 { grid-template-columns: 1fr 1fr; }
+  .form-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+  }
+  label .req { color: var(--red); margin-left: 2px; }
+
+  input[type="text"],
+  input[type="tel"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 9px 13px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 14px;
+    color: var(--gray-900);
+    background: var(--gray-50);
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    outline: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--red);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(200,16,46,0.08);
+  }
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* ===== RADIO/CHECKBOX ===== */
+  .radio-group { display: flex; flex-wrap: wrap; gap: 10px; }
+  .radio-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 14px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13.5px;
+    color: var(--gray-700);
+    transition: all 0.2s;
+    user-select: none;
+    background: var(--gray-50);
+  }
+  .radio-label:hover { border-color: var(--red-mid); background: var(--red-light); color: var(--red-dark); }
+  .radio-label input { display: none; }
+  .radio-label.selected { border-color: var(--red); background: var(--red-light); color: var(--red-dark); font-weight: 600; }
+  .radio-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--gray-300);
+    flex-shrink: 0;
+    transition: all 0.2s;
+    background: white;
+  }
+  .radio-label.selected .radio-dot { border-color: var(--red); background: var(--red); }
+
+  /* ===== PAINT TABLE ===== */
+  .paint-table { width: 100%; border-collapse: collapse; }
+  .paint-table thead th {
+    background: var(--gray-100);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--gray-500);
+    padding: 9px 12px;
+    text-align: left;
+    border-bottom: 2px solid var(--gray-200);
+  }
+  .paint-table tbody td { padding: 8px 8px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+  .paint-table tbody tr:last-child td { border-bottom: none; }
+  .paint-table tbody tr:hover td { background: var(--gray-50); }
+  .paint-type-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .paint-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ===== COMPETITOR TABLE ===== */
+  .comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .comp-row-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-500);
+    margin-bottom: 4px;
+  }
+
+  /* ===== DIVIDER ===== */
+  .divider { height: 1px; background: var(--gray-100); margin: 16px 0; }
+
+  /* ===== VALUE ROW ===== */
+  .value-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 16px 22px;
+    background: linear-gradient(135deg, #FFF8F9 0%, white 100%);
+    border-top: 1px solid var(--gray-100);
+  }
+  .value-field label { font-size: 12px; color: var(--gray-500); font-weight: 600; margin-bottom: 5px; display: block; }
+  .value-input-wrap { position: relative; }
+  .value-input-wrap span {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: var(--gray-400);
+    font-weight: 500;
+    pointer-events: none;
+  }
+
+  /* ===== SUBMIT BUTTON ===== */
+  .submit-bar {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 20px 22px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: var(--radius-sm);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+  .btn svg { width: 16px; height: 16px; }
+  .btn-primary { background: var(--red); color: white; }
+  .btn-primary:hover { background: var(--red-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(200,16,46,0.3); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-secondary { background: var(--gray-100); color: var(--gray-700); border: 1.5px solid var(--gray-200); }
+  .btn-secondary:hover { background: var(--gray-200); }
+  .btn-success { background: #059669; color: white; }
+  .btn-success:hover { background: #047857; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(5,150,105,0.3); }
+  .btn-sm { padding: 7px 14px; font-size: 13px; }
+  .btn-danger { background: #FEE2E2; color: #DC2626; border: 1.5px solid #FECACA; }
+  .btn-danger:hover { background: #FEE2E2; }
+
+  /* ===== TOAST ===== */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--gray-900);
+    color: white;
+    padding: 14px 22px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { background: #065F46; }
+  .toast.error { background: #991B1B; }
+  .toast svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+  /* ===== RECORDS TABLE ===== */
+  .records-toolbar {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 14px 20px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .records-search {
+    position: relative;
+    flex: 1;
+    max-width: 320px;
+  }
+  .records-search input {
+    padding-left: 36px;
+    background: var(--gray-50);
+  }
+  .records-search svg {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    color: var(--gray-400);
+    pointer-events: none;
+  }
+  .records-table-wrap {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+  .records-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  .records-table thead th {
+    background: var(--gray-50);
+    padding: 11px 14px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--gray-200);
+    white-space: nowrap;
+  }
+  .records-table tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--gray-100);
+    vertical-align: top;
+  }
+  .records-table tbody tr:last-child td { border-bottom: none; }
+  .records-table tbody tr:hover td { background: var(--gray-50); }
+  .project-name { font-weight: 600; color: var(--gray-900); }
+  .project-meta { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+  .proj-type-chip {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11.5px;
+    font-weight: 600;
+    background: var(--red-light);
+    color: var(--red-dark);
+    border: 1px solid var(--red-mid);
+  }
+  .date-cell { font-size: 12.5px; color: var(--gray-500); white-space: nowrap; }
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--gray-400);
+  }
+  .empty-state svg { width: 48px; height: 48px; margin: 0 auto 14px; display: block; opacity: 0.4; }
+  .empty-state p { font-size: 15px; }
+
+  /* ===== DETAIL MODAL ===== */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: white;
+    border-radius: var(--radius-lg);
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    transform: scale(0.95);
+    transition: transform 0.2s;
+  }
+  .modal-overlay.open .modal { transform: scale(1); }
+  .modal-header {
+    background: var(--red);
+    color: white;
+    padding: 18px 24px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-header h3 { font-family: 'Kanit', sans-serif; font-size: 17px; font-weight: 600; }
+  .modal-close {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+    font-size: 18px;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.35); }
+  .modal-body { padding: 24px; }
+  .detail-section { margin-bottom: 20px; }
+  .detail-section h4 {
+    font-family: 'Kanit', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--red);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--red-light);
+  }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .detail-item label { font-size: 11.5px; color: var(--gray-500); font-weight: 600; display: block; margin-bottom: 2px; }
+  .detail-item span { font-size: 14px; color: var(--gray-900); }
+  .detail-item.full { grid-column: 1/-1; }
+
+  /* ===== SUMMARY STATS ===== */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+  }
+  .stat-card .num {
+    font-family: 'Kanit', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+  .stat-card .lbl { font-size: 12px; color: var(--gray-500); font-weight: 500; }
+
+  /* ===== PAGE VISIBILITY ===== */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 640px) {
+    .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
+    .stats-bar { grid-template-columns: 1fr 1fr; }
+    .navbar-brand .brand-title { display: none; }
+    .tab-btn span { display: none; }
+    .tab-btn { padding: 8px 12px; }
+    .comp-grid { grid-template-columns: 1fr; }
+    .detail-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div class="brand-logo">BEGER</div>
+    <span class="brand-title">ระบบขอราคางานโครงการ</span>
+  </div>
+  <div class="navbar-tabs">
+    <button class="tab-btn active" onclick="showPage('form')" id="tab-form">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      <span>กรอกข้อมูล</span>
+    </button>
+    <button class="tab-btn" onclick="showPage('records')" id="tab-records">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18M3 18h18M3 6h18"/></svg>
+      <span>รายการทั้งหมด</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ========== PAGE: FORM ========== -->
+<div class="page active" id="page-form">
+<div class="container">
+  <div class="page-header">
+    <div class="page-header-text">
+      <h1>แบบฟอร์มการขอราคาโครงการ</h1>
+      <p>กรุณากรอกรายละเอียดให้ครบถ้วนเพื่อประเมินราคาได้อย่างถูกต้อง</p>
+    </div>
+    <span class="badge">Beger Co., Ltd.</span>
+  </div>
+
+  <!-- SECTION 0: ข้อมูลพนักงาน -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+      </div>
+      <h2>ข้อมูลพนักงาน (PC / Sales)</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid form-grid-3">
+        <div class="form-group">
+          <label>ชื่อสาขา <span class="req">*</span></label>
+          <input type="text" id="branchName" placeholder="เช่น สาขากรุงเทพฯ">
+        </div>
+        <div class="form-group">
+          <label>ชื่อ PC / Sales <span class="req">*</span></label>
+          <input type="text" id="pcName" placeholder="ชื่อ-นามสกุล">
+        </div>
+        <div class="form-group">
+          <label>เบอร์โทรติดต่อ <span class="req">*</span></label>
+          <input type="tel" id="pcPhone" placeholder="0xx-xxx-xxxx">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 1: ชื่อโครงการ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="section-num">1</span>
+      <h2>ชื่อโครงการและที่อยู่ของโครงการ</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>ชื่อโครงการ <span class="req">*</span></label>
+          <input type="text" id="projectName" placeholder="ชื่อโครงการ">
+        </div>
+        <div class="form-grid form-grid-2">
+          <div class="form-group">
+            <label>เลขที่</label>
+            <input type="text" id="addressNo" placeholder="เลขที่">
+          </div>
+          <div class="form-group">
+            <label>ถนน</label>
+            <input type="text" id="addressRoad" placeholder="ถนน">
+          </div>
+          <div class="form-group">
+            <label>ตำบล / อำเภอ</label>
+            <input type="text" id="addressSub" placeholder="ตำบล / อำเภอ">
+          </div>
+          <div class="form-group">
+            <label>จังหวัด</label>
+            <input type="text" id="addressProv" placeholder="จังหวัด">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: เจ้าของโครงการ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="section-num">2</span>
+      <h2>เจ้าของโครงการ</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid form-grid-2">
+        <div class="form-group">
+          <label>ชื่อเจ้าของโครงการ</label>
+          <input type="text" id="ownerName" placeholder="ชื่อ-นามสกุล">
+        </div>
+        <div class="form-group">
+          <label>เบอร์ติดต่อ</label>
+          <input type="tel" id="ownerPhone" placeholder="0xx-xxx-xxxx">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: ผู้รับเหมา -->
+  <div class="card">
+    <div class="card-header">
+      <span class="section-num">3</span>
+      <h2>ผู้รับเหมา (ชื่อ และ บริษัท/หจก.)</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid form-grid-3">
+        <div class="form-group">
+          <label>ชื่อผู้รับเหมา</label>
+          <input type="text" id="contractorName" placeholder="ชื่อ-นามสกุล">
+        </div>
+        <div class="form-group">
+          <label>ชื่อบริษัท / หจก.</label>
+          <input type="text" id="contractorCompany" placeholder="บริษัท / หจก.">
+        </div>
+        <div class="form-group">
+          <label>เบอร์ติดต่อ</label>
+          <input type="tel" id="contractorPhone" placeholder="0xx-xxx-xxxx">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: ประเภทโครงการ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="section-num">4</span>
+      <h2>ประเภทโครงการ</h2>
+    </div>
+    <div class="card-body">
+      <div class="radio-group" id="projectTypeGroup">
+        <label class="radio-label" onclick="selectRadio(this,'projectTypeGroup')">
+          <span class="radio-dot"></span>หอพัก
+        </label>
+        <label class="radio-label" onclick="selectRadio(this,'projectTypeGroup')">
+          <span class="radio-dot"></span>โรงแรม
+        </label>
+        <label class="radio-label" onclick="selectRadio(this,'projectTypeGroup')">
+          <span class="radio-dot"></span>อาคารพาณิชย์
+        </label>
+        <label class="radio-label" onclick="selectRadio(this,'projectTypeGroup')">
+          <span class="radio-dot"></span>โรงพยาบาล
+        </label>
+        <label class="radio-label" onclick="selectRadio(this,'projectTypeGroup')">
+          <span class="radio-dot"></span>คอนโดมิเนียม
+        </label>
+        <label class="radio-label" onclick="selectRadio(this,'projectTypeGroup')">
+          <span class="radio-dot"></span>บ้านพักอาศัย
+        </label>
+        <label class="radio-label other-label" onclick="selectRadio(this,'projectTypeGroup')">
+          <span class="radio-dot"></span>อื่นๆ
+        </label>
+      </div>
+      <div style="margin-top:12px;display:none" id="projectTypeOtherWrap">
+        <input type="text" id="projectTypeOther" placeholder="ระบุประเภทโครงการ...">
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: ประเภทสี -->
+  <div class="card">
+    <div class="card-header">
+      <span class="section-num">5</span>
+      <h2>ประเภทสีที่ต้องการ</h2>
+    </div>
+    <div class="card-body" style="padding:0">
+      <table class="paint-table">
+        <thead>
+          <tr>
+            <th style="width:180px">ประเภทสี</th>
+            <th>รุ่น / รหัสสินค้า</th>
+            <th style="width:130px">จำนวน (ถัง)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="paint-type-label"><span class="paint-dot" style="background:#E9C46A"></span>สีรองพื้น</div></td>
+            <td><input type="text" id="p1model" placeholder="รุ่น/รหัสสินค้า"></td>
+            <td><input type="number" id="p1qty" placeholder="0" min="0"></td>
+          </tr>
+          <tr>
+            <td><div class="paint-type-label"><span class="paint-dot" style="background:#A8DADC"></span>สีทาฝ้า</div></td>
+            <td><input type="text" id="p2model" placeholder="รุ่น/รหัสสินค้า"></td>
+            <td><input type="number" id="p2qty" placeholder="0" min="0"></td>
+          </tr>
+          <tr>
+            <td><div class="paint-type-label"><span class="paint-dot" style="background:#457B9D"></span>สีทาภายนอก</div></td>
+            <td><input type="text" id="p3model" placeholder="รุ่น/รหัสสินค้า"></td>
+            <td><input type="number" id="p3qty" placeholder="0" min="0"></td>
+          </tr>
+          <tr>
+            <td><div class="paint-type-label"><span class="paint-dot" style="background:#E76F51"></span>สีทาภายใน</div></td>
+            <td><input type="text" id="p4model" placeholder="รุ่น/รหัสสินค้า"></td>
+            <td><input type="number" id="p4qty" placeholder="0" min="0"></td>
+          </tr>
+          <tr>
+            <td><div class="paint-type-label"><span class="paint-dot" style="background:#9B5DE5"></span>อื่นๆ</div></td>
+            <td><input type="text" id="p5model" placeholder="โปรดระบุ / รหัสสินค้า"></td>
+            <td><input type="number" id="p5qty" placeholder="0" min="0"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="value-row">
+      <div class="value-field">
+        <label>มูลค่าโครงการทั้งหมด (บาท)</label>
+        <div class="value-input-wrap">
+          <input type="number" id="projectValue" placeholder="0.00" min="0">
+          <span>฿</span>
+        </div>
+      </div>
+      <div class="value-field">
+        <label>มูลค่าสี เฉพาะวัสดุสี (บาท)</label>
+        <div class="value-input-wrap">
+          <input type="number" id="paintValue" placeholder="0.00" min="0">
+          <span>฿</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: ปริมาณพื้นที่ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="section-num">6</span>
+      <h2>ปริมาณพื้นที่ที่ต้องการสี</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid form-grid-3">
+        <div class="form-group">
+          <label>พื้นที่ทาภายใน (ตร.ม.)</label>
+          <input type="number" id="areaInside" placeholder="0" min="0">
+        </div>
+        <div class="form-group">
+          <label>พื้นที่ทาภายนอก (ตร.ม.)</label>
+          <input type="number" id="areaOutside" placeholder="0" min="0">
+        </div>
+        <div class="form-group">
+          <label>จำนวนชั้น</label>
+          <input type="number" id="floors" placeholder="0" min="0">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: คู่แข่ง -->
+  <div class="card">
+    <div class="card-header">
+      <span class="section-num">7</span>
+      <h2>คู่แข่งที่มีแบรนด์ใดบ้าง</h2>
+    </div>
+    <div class="card-body">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="form-grid form-grid-2">
+          <div class="form-group"><label>ยี่ห้อที่ 1</label><input type="text" id="comp1brand" placeholder="ยี่ห้อ"></div>
+          <div class="form-group"><label>รุ่นที่ใช้</label><input type="text" id="comp1model" placeholder="รุ่น/ผลิตภัณฑ์"></div>
+        </div>
+        <div class="form-grid form-grid-2">
+          <div class="form-group"><label>ยี่ห้อที่ 2</label><input type="text" id="comp2brand" placeholder="ยี่ห้อ"></div>
+          <div class="form-group"><label>รุ่นที่ใช้</label><input type="text" id="comp2model" placeholder="รุ่น/ผลิตภัณฑ์"></div>
+        </div>
+        <div class="form-grid form-grid-2">
+          <div class="form-group"><label>ยี่ห้อที่ 3</label><input type="text" id="comp3brand" placeholder="ยี่ห้อ"></div>
+          <div class="form-group"><label>รุ่นที่ใช้</label><input type="text" id="comp3model" placeholder="รุ่น/ผลิตภัณฑ์"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 8: หมายเหตุ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="section-num">8</span>
+      <h2>คำแนะนำหรือข้อเสนอแนะเพิ่มเติม</h2>
+    </div>
+    <div class="card-body">
+      <textarea id="remarks" placeholder="กรอกคำแนะนำหรือข้อเสนอแนะเพิ่มเติม..."></textarea>
+    </div>
+  </div>
+
+  <!-- SUBMIT BAR -->
+  <div class="submit-bar">
+    <button class="btn btn-secondary" onclick="clearForm()">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+      ล้างข้อมูล
+    </button>
+    <button class="btn btn-primary" onclick="submitForm()">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      บันทึกข้อมูล
+    </button>
+  </div>
+</div>
+</div>
+
+<!-- ========== PAGE: RECORDS ========== -->
+<div class="page" id="page-records">
+<div class="container">
+  <div class="page-header">
+    <div class="page-header-text">
+      <h1>รายการขอราคาโครงการ</h1>
+      <p>ข้อมูลทั้งหมดที่บันทึกไว้ในระบบ</p>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar" id="statsBar"></div>
+
+  <!-- TOOLBAR -->
+  <div class="records-toolbar">
+    <div class="records-search">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <input type="text" id="searchInput" placeholder="ค้นหาชื่อโครงการ, จังหวัด..." oninput="renderRecords()">
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span id="recordCount" style="font-size:13px;color:var(--gray-500)"></span>
+      <button class="btn btn-success btn-sm" onclick="exportExcel()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        Export Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="records-table-wrap">
+    <table class="records-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>ชื่อโครงการ</th>
+          <th>ประเภท</th>
+          <th>สาขา / PC</th>
+          <th>มูลค่าสี (฿)</th>
+          <th>วันที่บันทึก</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="recordsBody"></tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">รายละเอียดโครงการ</h3>
+      <button class="modal-close" onclick="closeModalDirect()">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+// ========== DATA LAYER ==========
+const DB_KEY = 'beger_project_quotations';
+function getRecords() {
+  try { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
+  catch { return []; }
+}
+function saveRecords(data) {
+  localStorage.setItem(DB_KEY, JSON.stringify(data));
+}
+
+// ========== PAGE SWITCHING ==========
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'records') { renderStats(); renderRecords(); }
+}
+
+// ========== RADIO SELECT ==========
+function selectRadio(el, groupId) {
+  document.querySelectorAll('#' + groupId + ' .radio-label').forEach(l => l.classList.remove('selected'));
+  el.classList.add('selected');
+  const isOther = el.classList.contains('other-label');
+  const otherWrap = document.getElementById('projectTypeOtherWrap');
+  if (otherWrap) otherWrap.style.display = isOther ? 'block' : 'none';
+}
+
+// ========== GET FORM DATA ==========
+function getFormData() {
+  const selectedType = document.querySelector('#projectTypeGroup .selected');
+  let projectType = selectedType ? selectedType.textContent.trim() : '';
+  if (projectType === 'อื่นๆ') {
+    projectType = 'อื่นๆ: ' + (document.getElementById('projectTypeOther').value.trim());
+  }
+
+  return {
+    id: Date.now(),
+    submittedAt: new Date().toISOString(),
+    // Staff
+    branchName: document.getElementById('branchName').value.trim(),
+    pcName: document.getElementById('pcName').value.trim(),
+    pcPhone: document.getElementById('pcPhone').value.trim(),
+    // Project info
+    projectName: document.getElementById('projectName').value.trim(),
+    addressNo: document.getElementById('addressNo').value.trim(),
+    addressRoad: document.getElementById('addressRoad').value.trim(),
+    addressSub: document.getElementById('addressSub').value.trim(),
+    addressProv: document.getElementById('addressProv').value.trim(),
+    // Owner
+    ownerName: document.getElementById('ownerName').value.trim(),
+    ownerPhone: document.getElementById('ownerPhone').value.trim(),
+    // Contractor
+    contractorName: document.getElementById('contractorName').value.trim(),
+    contractorCompany: document.getElementById('contractorCompany').value.trim(),
+    contractorPhone: document.getElementById('contractorPhone').value.trim(),
+    // Type
+    projectType,
+    // Paint
+    p1model: document.getElementById('p1model').value.trim(),
+    p1qty: document.getElementById('p1qty').value,
+    p2model: document.getElementById('p2model').value.trim(),
+    p2qty: document.getElementById('p2qty').value,
+    p3model: document.getElementById('p3model').value.trim(),
+    p3qty: document.getElementById('p3qty').value,
+    p4model: document.getElementById('p4model').value.trim(),
+    p4qty: document.getElementById('p4qty').value,
+    p5model: document.getElementById('p5model').value.trim(),
+    p5qty: document.getElementById('p5qty').value,
+    projectValue: document.getElementById('projectValue').value,
+    paintValue: document.getElementById('paintValue').value,
+    // Area
+    areaInside: document.getElementById('areaInside').value,
+    areaOutside: document.getElementById('areaOutside').value,
+    floors: document.getElementById('floors').value,
+    // Competitors
+    comp1brand: document.getElementById('comp1brand').value.trim(),
+    comp1model: document.getElementById('comp1model').value.trim(),
+    comp2brand: document.getElementById('comp2brand').value.trim(),
+    comp2model: document.getElementById('comp2model').value.trim(),
+    comp3brand: document.getElementById('comp3brand').value.trim(),
+    comp3model: document.getElementById('comp3model').value.trim(),
+    // Remarks
+    remarks: document.getElementById('remarks').value.trim(),
+  };
+}
+
+// ========== SUBMIT FORM ==========
+function submitForm() {
+  const data = getFormData();
+  if (!data.projectName) { showToast('กรุณากรอกชื่อโครงการ', 'error'); return; }
+  if (!data.branchName || !data.pcName) { showToast('กรุณากรอกชื่อสาขาและชื่อ PC', 'error'); return; }
+
+  const records = getRecords();
+  records.unshift(data);
+  saveRecords(records);
+  showToast('บันทึกข้อมูลเรียบร้อยแล้ว ✓', 'success');
+  clearForm();
+}
+
+// ========== CLEAR FORM ==========
+function clearForm() {
+  document.querySelectorAll('input[type=text], input[type=tel], input[type=number], textarea').forEach(el => el.value = '');
+  document.querySelectorAll('.radio-label').forEach(el => el.classList.remove('selected'));
+  const otherWrap = document.getElementById('projectTypeOtherWrap');
+  if (otherWrap) otherWrap.style.display = 'none';
+}
+
+// ========== STATS ==========
+function renderStats() {
+  const records = getRecords();
+  const totalPaintValue = records.reduce((s, r) => s + (parseFloat(r.paintValue) || 0), 0);
+  const provinces = [...new Set(records.map(r => r.addressProv).filter(Boolean))].length;
+  const thisMonth = records.filter(r => {
+    const d = new Date(r.submittedAt);
+    const now = new Date();
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
+
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat-card"><div class="num">${records.length}</div><div class="lbl">รายการทั้งหมด</div></div>
+    <div class="stat-card"><div class="num">${thisMonth}</div><div class="lbl">เดือนนี้</div></div>
+    <div class="stat-card"><div class="num">${provinces}</div><div class="lbl">จังหวัด</div></div>
+    <div class="stat-card"><div class="num">${totalPaintValue >= 1e6 ? (totalPaintValue/1e6).toFixed(1)+'M' : (totalPaintValue/1e3).toFixed(0)+'K'}</div><div class="lbl">มูลค่าสีรวม (฿)</div></div>
+  `;
+}
+
+// ========== RENDER RECORDS ==========
+function renderRecords() {
+  const q = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  let records = getRecords();
+  if (q) records = records.filter(r =>
+    (r.projectName||'').toLowerCase().includes(q) ||
+    (r.addressProv||'').toLowerCase().includes(q) ||
+    (r.branchName||'').toLowerCase().includes(q) ||
+    (r.pcName||'').toLowerCase().includes(q)
+  );
+
+  document.getElementById('recordCount').textContent = `${records.length} รายการ`;
+  const tbody = document.getElementById('recordsBody');
+  if (!records.length) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      <p>ยังไม่มีรายการ</p></div></td></tr>`;
+    return;
+  }
+
+  const allRecords = getRecords();
+  tbody.innerHTML = records.map((r, i) => {
+    const realIdx = allRecords.findIndex(x => x.id === r.id);
+    const d = new Date(r.submittedAt);
+    const dateStr = d.toLocaleDateString('th-TH', { day:'2-digit', month:'short', year:'numeric' });
+    const paintVal = parseFloat(r.paintValue) || 0;
+    const addr = [r.addressSub, r.addressProv].filter(Boolean).join(', ');
+    return `<tr>
+      <td style="color:var(--gray-400);font-size:12px">${i+1}</td>
+      <td>
+        <div class="project-name">${r.projectName || '-'}</div>
+        <div class="project-meta">${addr || 'ไม่ระบุที่อยู่'}</div>
+      </td>
+      <td><span class="proj-type-chip">${r.projectType || '-'}</span></td>
+      <td>
+        <div style="font-size:13px;font-weight:500">${r.branchName || '-'}</div>
+        <div class="project-meta">${r.pcName || ''} ${r.pcPhone ? '| '+r.pcPhone : ''}</div>
+      </td>
+      <td style="font-weight:600;color:var(--red-dark)">${paintVal > 0 ? paintVal.toLocaleString('th-TH') : '-'}</td>
+      <td class="date-cell">${dateStr}</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-secondary btn-sm" onclick="showDetail(${realIdx})" style="margin-right:6px">ดูรายละเอียด</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteRecord(${realIdx})">ลบ</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ========== DETAIL MODAL ==========
+function showDetail(idx) {
+  const r = getRecords()[idx];
+  if (!r) return;
+  const d = new Date(r.submittedAt);
+  const dateStr = d.toLocaleDateString('th-TH', { day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+
+  document.getElementById('modalTitle').textContent = r.projectName || 'รายละเอียดโครงการ';
+
+  const paintTypes = [
+    { name:'สีรองพื้น', model:r.p1model, qty:r.p1qty },
+    { name:'สีทาฝ้า', model:r.p2model, qty:r.p2qty },
+    { name:'สีทาภายนอก', model:r.p3model, qty:r.p3qty },
+    { name:'สีทาภายใน', model:r.p4model, qty:r.p4qty },
+    { name:'อื่นๆ', model:r.p5model, qty:r.p5qty },
+  ].filter(p => p.model || p.qty);
+
+  const comps = [
+    r.comp1brand ? `${r.comp1brand}${r.comp1model ? ' / '+r.comp1model : ''}` : null,
+    r.comp2brand ? `${r.comp2brand}${r.comp2model ? ' / '+r.comp2model : ''}` : null,
+    r.comp3brand ? `${r.comp3brand}${r.comp3model ? ' / '+r.comp3model : ''}` : null,
+  ].filter(Boolean);
+
+  document.getElementById('modalBody').innerHTML = `
+    <div class="detail-section">
+      <h4>ข้อมูลพนักงาน</h4>
+      <div class="detail-grid">
+        <div class="detail-item"><label>สาขา</label><span>${r.branchName||'-'}</span></div>
+        <div class="detail-item"><label>PC / Sales</label><span>${r.pcName||'-'}</span></div>
+        <div class="detail-item"><label>เบอร์โทร PC</label><span>${r.pcPhone||'-'}</span></div>
+        <div class="detail-item"><label>วันที่บันทึก</label><span>${dateStr}</span></div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <h4>ข้อมูลโครงการ</h4>
+      <div class="detail-grid">
+        <div class="detail-item full"><label>ชื่อโครงการ</label><span>${r.projectName||'-'}</span></div>
+        <div class="detail-item"><label>ที่อยู่</label><span>${[r.addressNo,r.addressRoad,r.addressSub,r.addressProv].filter(Boolean).join(', ')||'-'}</span></div>
+        <div class="detail-item"><label>ประเภทโครงการ</label><span>${r.projectType||'-'}</span></div>
+        <div class="detail-item"><label>เจ้าของโครงการ</label><span>${r.ownerName||'-'} ${r.ownerPhone ? '('+r.ownerPhone+')' : ''}</span></div>
+        <div class="detail-item"><label>ผู้รับเหมา</label><span>${r.contractorName||'-'} ${r.contractorCompany ? '/ '+r.contractorCompany : ''}</span></div>
+      </div>
+    </div>
+    ${paintTypes.length ? `
+    <div class="detail-section">
+      <h4>ประเภทสีที่ต้องการ</h4>
+      <div class="detail-grid">
+        ${paintTypes.map(p => `<div class="detail-item"><label>${p.name}</label><span>${p.model||'-'} ${p.qty ? '('+p.qty+' ถัง)' : ''}</span></div>`).join('')}
+      </div>
+    </div>` : ''}
+    <div class="detail-section">
+      <h4>มูลค่าและพื้นที่</h4>
+      <div class="detail-grid">
+        <div class="detail-item"><label>มูลค่าโครงการ</label><span>${r.projectValue ? parseFloat(r.projectValue).toLocaleString('th-TH')+' ฿' : '-'}</span></div>
+        <div class="detail-item"><label>มูลค่าสี</label><span>${r.paintValue ? parseFloat(r.paintValue).toLocaleString('th-TH')+' ฿' : '-'}</span></div>
+        <div class="detail-item"><label>พื้นที่ภายใน</label><span>${r.areaInside ? r.areaInside+' ตร.ม.' : '-'}</span></div>
+        <div class="detail-item"><label>พื้นที่ภายนอก</label><span>${r.areaOutside ? r.areaOutside+' ตร.ม.' : '-'}</span></div>
+        <div class="detail-item"><label>จำนวนชั้น</label><span>${r.floors||'-'}</span></div>
+      </div>
+    </div>
+    ${comps.length ? `
+    <div class="detail-section">
+      <h4>คู่แข่ง</h4>
+      <div class="detail-grid">
+        ${comps.map(c => `<div class="detail-item"><span>${c}</span></div>`).join('')}
+      </div>
+    </div>` : ''}
+    ${r.remarks ? `
+    <div class="detail-section">
+      <h4>หมายเหตุ</h4>
+      <p style="font-size:14px;line-height:1.7;color:var(--gray-700)">${r.remarks}</p>
+    </div>` : ''}
+  `;
+
+  document.getElementById('detailModal').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('detailModal')) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById('detailModal').classList.remove('open');
+}
+
+// ========== DELETE ==========
+function deleteRecord(idx) {
+  if (!confirm('ต้องการลบรายการนี้?')) return;
+  const records = getRecords();
+  records.splice(idx, 1);
+  saveRecords(records);
+  renderStats();
+  renderRecords();
+  showToast('ลบรายการเรียบร้อยแล้ว');
+}
+
+// ========== EXPORT EXCEL ==========
+function exportExcel() {
+  const records = getRecords();
+  if (!records.length) { showToast('ไม่มีข้อมูลสำหรับ Export', 'error'); return; }
+
+  const headers = [
+    'ลำดับ','วันที่บันทึก',
+    'สาขา','ชื่อ PC','เบอร์ PC',
+    'ชื่อโครงการ','เลขที่','ถนน','ตำบล/อำเภอ','จังหวัด',
+    'เจ้าของโครงการ','เบอร์เจ้าของ',
+    'ผู้รับเหมา','บริษัท/หจก.','เบอร์ผู้รับเหมา',
+    'ประเภทโครงการ',
+    'สีรองพื้น-รุ่น','สีรองพื้น-จำนวน',
+    'สีทาฝ้า-รุ่น','สีทาฝ้า-จำนวน',
+    'สีทาภายนอก-รุ่น','สีทาภายนอก-จำนวน',
+    'สีทาภายใน-รุ่น','สีทาภายใน-จำนวน',
+    'อื่นๆ-รุ่น','อื่นๆ-จำนวน',
+    'มูลค่าโครงการ','มูลค่าสี',
+    'พื้นที่ภายใน(ตรม)','พื้นที่ภายนอก(ตรม)','จำนวนชั้น',
+    'คู่แข่ง1-ยี่ห้อ','คู่แข่ง1-รุ่น',
+    'คู่แข่ง2-ยี่ห้อ','คู่แข่ง2-รุ่น',
+    'คู่แข่ง3-ยี่ห้อ','คู่แข่ง3-รุ่น',
+    'หมายเหตุ'
+  ];
+
+  const rows = records.map((r, i) => {
+    const d = new Date(r.submittedAt);
+    const dateStr = d.toLocaleDateString('th-TH', { day:'2-digit', month:'2-digit', year:'numeric' });
+    return [
+      i+1, dateStr,
+      r.branchName, r.pcName, r.pcPhone,
+      r.projectName, r.addressNo, r.addressRoad, r.addressSub, r.addressProv,
+      r.ownerName, r.ownerPhone,
+      r.contractorName, r.contractorCompany, r.contractorPhone,
+      r.projectType,
+      r.p1model, r.p1qty||'',
+      r.p2model, r.p2qty||'',
+      r.p3model, r.p3qty||'',
+      r.p4model, r.p4qty||'',
+      r.p5model, r.p5qty||'',
+      r.projectValue||'', r.paintValue||'',
+      r.areaInside||'', r.areaOutside||'', r.floors||'',
+      r.comp1brand, r.comp1model,
+      r.comp2brand, r.comp2model,
+      r.comp3brand, r.comp3model,
+      r.remarks
+    ];
+  });
+
+  const wsData = [headers, ...rows];
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // Column widths
+  ws['!cols'] = headers.map((h, i) => {
+    const maxLen = Math.max(h.length, ...rows.map(r => String(r[i]||'').length));
+    return { wch: Math.min(Math.max(maxLen + 2, 10), 40) };
+  });
+
+  XLSX.utils.book_append_sheet(wb, ws, 'ขอราคาโครงการ');
+
+  const now = new Date();
+  const fname = `Beger_ProjectQuotations_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.xlsx`;
+  XLSX.writeFile(wb, fname);
+  showToast(`Export สำเร็จ: ${fname}`, 'success');
+}
+
+// ========== TOAST ==========
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  const m = document.getElementById('toastMsg');
+  t.className = 'toast ' + type;
+  m.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+</script>
+</body>
+</html>
