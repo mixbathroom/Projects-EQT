@@ -10,6 +10,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <!-- firebase-storage ไม่ใช้แล้ว ใช้ base64 แทน -->
+<!-- PASSWORD MODAL -->
+
 <style>
   :root {
     --red: #C8102E;
@@ -35,6 +37,109 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pwdFadeIn { from { opacity:0; transform:scale(0.93); } to { opacity:1; transform:scale(1); } }
+
+  /* ===== PASSWORD MODAL ===== */
+  .pwd-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(4px);
+    align-items: center; justify-content: center;
+  }
+  .pwd-overlay.open { display: flex; }
+  .pwd-box {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    padding: 32px 28px 28px;
+    width: 340px;
+    max-width: 90vw;
+    animation: pwdFadeIn 0.2s ease;
+    text-align: center;
+  }
+  .pwd-icon {
+    width: 52px; height: 52px;
+    background: var(--red-light);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    border: 2px solid var(--red-mid);
+  }
+  .pwd-icon svg { width: 24px; height: 24px; color: var(--red); }
+  .pwd-title {
+    font-family: 'Kanit', sans-serif;
+    font-size: 17px; font-weight: 700;
+    color: var(--gray-900); margin-bottom: 4px;
+  }
+  .pwd-sub {
+    font-size: 13px; color: var(--gray-500);
+    margin-bottom: 20px; line-height: 1.5;
+  }
+  .pwd-input-wrap {
+    position: relative; margin-bottom: 8px;
+  }
+  .pwd-input {
+    width: 100%;
+    padding: 11px 42px 11px 14px;
+    border: 2px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 16px; letter-spacing: 3px;
+    font-family: 'Sarabun', sans-serif;
+    color: var(--gray-900);
+    background: var(--gray-50);
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    text-align: center;
+  }
+  .pwd-input:focus {
+    border-color: var(--red);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(200,16,46,0.1);
+  }
+  .pwd-input.shake {
+    animation: pwdShake 0.4s ease;
+    border-color: #DC2626;
+  }
+  @keyframes pwdShake {
+    0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 60%{transform:translateX(6px)} 80%{transform:translateX(-4px)}
+  }
+  .pwd-toggle {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer;
+    color: var(--gray-400); padding: 0; line-height: 1;
+    transition: color 0.2s;
+  }
+  .pwd-toggle:hover { color: var(--gray-700); }
+  .pwd-error {
+    font-size: 12.5px; color: #DC2626; font-weight: 600;
+    margin-bottom: 14px; min-height: 18px;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+  }
+  .pwd-actions {
+    display: flex; gap: 10px; margin-top: 6px;
+  }
+  .pwd-btn-cancel {
+    flex: 1; padding: 10px; border-radius: 8px;
+    border: 1.5px solid var(--gray-200);
+    background: white; color: var(--gray-700);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pwd-btn-cancel:hover { background: var(--gray-100); border-color: var(--gray-300); }
+  .pwd-btn-confirm {
+    flex: 2; padding: 10px; border-radius: 8px;
+    border: none; background: var(--red); color: white;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    transition: background 0.2s;
+  }
+  .pwd-btn-confirm:hover { background: var(--red-dark); }
+  .pwd-attempts {
+    font-size: 11.5px; color: var(--gray-400);
+    margin-top: 12px;
+  }
 
   body {
     font-family: 'Sarabun', sans-serif;
@@ -1382,6 +1487,37 @@ addCompRow();
   <span id="toastMsg"></span>
 </div>
 
+<!-- PASSWORD MODAL -->
+<div class="pwd-overlay" id="pwdModal">
+  <div class="pwd-box">
+    <div class="pwd-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+    </div>
+    <div class="pwd-title">ยืนยันตัวตน</div>
+    <div class="pwd-sub">กรุณาใส่รหัสผ่านเพื่อดำเนินการ Export ข้อมูล</div>
+    <div class="pwd-input-wrap">
+      <input class="pwd-input" type="password" id="pwdInput"
+        placeholder="••••••"
+        maxlength="20"
+        autocomplete="off"
+        onkeydown="if(event.key==='Enter')pwdConfirm();if(event.key==='Escape')pwdCancel();"
+        oninput="document.getElementById('pwdError').textContent=''">
+      <button class="pwd-toggle" type="button" id="pwdToggleBtn" onclick="pwdToggleShow()" title="แสดง/ซ่อนรหัสผ่าน">
+        <svg id="pwdEyeIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:18px;height:18px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+      </button>
+    </div>
+    <div class="pwd-error" id="pwdError"></div>
+    <div class="pwd-actions">
+      <button class="pwd-btn-cancel" onclick="pwdCancel()">ยกเลิก</button>
+      <button class="pwd-btn-confirm" onclick="pwdConfirm()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:15px;height:15px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+        ยืนยัน Export
+      </button>
+    </div>
+    <div class="pwd-attempts" id="pwdAttempts"></div>
+  </div>
+</div>
+
 <script>
 // ========== FIREBASE INIT ==========
 const firebaseConfig = {
@@ -2168,14 +2304,16 @@ function saveNote(key, value) {
 
 // ========== EXPORT SINGLE FILE ==========
 function exportSingleFile(key) {
-  const r = _records.find(x => x._key === key);
-  if (!r || !r.fileURL || !r.fileName) { showToast('ไม่พบไฟล์แนบ', 'error'); return; }
-  const a = document.createElement('a');
-  a.href = r.fileURL;
-  const prefix = (r.projectName || 'ไฟล์แนบ').replace(/[\\/:*?"<>|]/g, '_').slice(0, 40);
-  a.download = prefix + '_' + r.fileName;
-  a.click();
-  showToast('Export ไฟล์แนบสำเร็จ: ' + r.fileName, 'success');
+  requirePassword(() => {
+    const r = _records.find(x => x._key === key);
+    if (!r || !r.fileURL || !r.fileName) { showToast('ไม่พบไฟล์แนบ', 'error'); return; }
+    const a = document.createElement('a');
+    a.href = r.fileURL;
+    const prefix = (r.projectName || 'ไฟล์แนบ').replace(/[\\/:*?"<>|]/g, '_').slice(0, 40);
+    a.download = prefix + '_' + r.fileName;
+    a.click();
+    showToast('Export ไฟล์แนบสำเร็จ: ' + r.fileName, 'success');
+  });
 }
 
 // ========== UPDATE FILE ATTACH COUNT ==========
@@ -2188,6 +2326,10 @@ function updateFileAttachCount() {
 
 // ========== EXPORT ALL ATTACHED FILES AS ZIP ==========
 async function exportAllFiles() {
+  requirePassword(() => _doExportAllFiles());
+}
+
+async function _doExportAllFiles() {
   const records = getRecords();
   const withFiles = records.filter(r => r.fileURL && r.fileName);
   if (!withFiles.length) { showToast('ไม่มีไฟล์แนบในระบบ', 'error'); return; }
@@ -2243,6 +2385,10 @@ async function exportAllFiles() {
 }
 
 function exportExcel() {
+  requirePassword(() => _doExportExcel());
+}
+
+function _doExportExcel() {
   const records = getRecords();
   if (!records.length) { showToast('ไม่มีข้อมูลสำหรับ Export', 'error'); return; }
 
@@ -2475,6 +2621,76 @@ function spConfirm() {
   } else {
     REF.push(data).then(onSuccess).catch(onError);
   }
+}
+
+// ========== PASSWORD MODAL ==========
+const EXPORT_PASSWORD = '12345';
+let _pwdCallback = null;
+let _pwdAttempts = 0;
+
+function requirePassword(callback) {
+  _pwdCallback = callback;
+  _pwdAttempts = 0;
+  const input = document.getElementById('pwdInput');
+  const errEl = document.getElementById('pwdError');
+  const attEl = document.getElementById('pwdAttempts');
+  if (input) { input.value = ''; input.type = 'password'; input.classList.remove('shake'); }
+  if (errEl) errEl.textContent = '';
+  if (attEl) attEl.textContent = '';
+  // reset eye icon
+  const eyeIcon = document.getElementById('pwdEyeIcon');
+  if (eyeIcon) eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
+  document.getElementById('pwdModal').classList.add('open');
+  setTimeout(() => { if (input) input.focus(); }, 100);
+}
+
+function pwdConfirm() {
+  const input = document.getElementById('pwdInput');
+  const errEl = document.getElementById('pwdError');
+  const attEl = document.getElementById('pwdAttempts');
+  const entered = (input ? input.value : '').trim();
+
+  if (entered === EXPORT_PASSWORD) {
+    document.getElementById('pwdModal').classList.remove('open');
+    _pwdAttempts = 0;
+    if (_pwdCallback) {
+      const cb = _pwdCallback;
+      _pwdCallback = null;
+      cb();
+    }
+  } else {
+    _pwdAttempts++;
+    if (errEl) errEl.innerHTML = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:13px;height:13px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> รหัสผ่านไม่ถูกต้อง';
+    if (attEl && _pwdAttempts > 1) attEl.textContent = `พยายามกรอก ${_pwdAttempts} ครั้ง`;
+    if (input) {
+      input.value = '';
+      input.classList.remove('shake');
+      void input.offsetWidth; // reflow to restart animation
+      input.classList.add('shake');
+      setTimeout(() => input.classList.remove('shake'), 500);
+      input.focus();
+    }
+  }
+}
+
+function pwdCancel() {
+  document.getElementById('pwdModal').classList.remove('open');
+  _pwdCallback = null;
+  _pwdAttempts = 0;
+}
+
+function pwdToggleShow() {
+  const input = document.getElementById('pwdInput');
+  const eyeIcon = document.getElementById('pwdEyeIcon');
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (eyeIcon) eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>';
+  } else {
+    input.type = 'password';
+    if (eyeIcon) eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
+  }
+  input.focus();
 }
 
 // ========== TOAST ==========
