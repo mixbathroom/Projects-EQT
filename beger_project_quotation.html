@@ -843,6 +843,73 @@
     .detail-grid { grid-template-columns: 1fr; }
   }
 
+  /* ===== DESKTOP VIEW MODE ===== */
+  body.view-desktop .container {
+    max-width: 100%;
+    padding: 20px 32px 60px;
+  }
+  body.view-desktop .records-table-wrap {
+    overflow-x: visible;
+  }
+  body.view-desktop .records-table {
+    table-layout: auto;
+    font-size: 12.5px;
+  }
+  body.view-desktop .records-table thead th,
+  body.view-desktop .records-table tbody td {
+    white-space: normal;
+    word-break: break-word;
+  }
+  body.view-desktop .records-table tbody td:nth-child(7) textarea {
+    width: 220px;
+  }
+  body.view-desktop .stats-bar {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  body.view-desktop .form-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+  body.view-desktop .form-grid-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  body.view-desktop .modal {
+    max-width: 860px;
+  }
+
+  /* ===== VIEW TOGGLE BUTTON ===== */
+  .view-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1.5px solid rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.85);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .view-toggle-btn:hover {
+    background: rgba(255,255,255,0.22);
+    color: white;
+    border-color: rgba(255,255,255,0.6);
+  }
+  .view-toggle-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .view-toggle-btn .vt-label-mobile { display: inline; }
+  .view-toggle-btn .vt-label-desktop { display: none; }
+  body.view-desktop .view-toggle-btn .vt-label-mobile { display: none; }
+  body.view-desktop .view-toggle-btn .vt-label-desktop { display: inline; }
+  body.view-desktop .view-toggle-btn {
+    background: rgba(255,255,255,0.22);
+    border-color: rgba(255,255,255,0.7);
+    color: white;
+  }
+
   /* ===== PRINT / PDF ===== */
   @media print {
     @page { size: A4; margin: 15mm 14mm 15mm 14mm; }
@@ -867,7 +934,7 @@
     <img src="data:image/png;base64,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" alt="Beger" style="height:42px;border-radius:4px;object-fit:contain;">
     <div>
       <span class="brand-title">ระบบขอราคางานโครงการ</span>
-      <div style="font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.5px;margin-top:1px">v1.0.0 &nbsp;|&nbsp; Beger Co., Ltd.</div>
+      <div style="font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.5px;margin-top:1px">v1.2 &nbsp;|&nbsp; Beger Co., Ltd.</div>
     </div>
   </div>
   <div class="navbar-tabs">
@@ -880,7 +947,21 @@
       <span>รายการทั้งหมด</span>
     </button>
   </div>
-  <span id="syncStatus" style="font-size:12px;color:rgba(255,255,255,0.6)">● กำลังเชื่อมต่อ...</span>
+  <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
+    <button class="view-toggle-btn" id="viewToggleBtn" onclick="toggleViewMode()" title="สลับมุมมอง Mobile / Desktop">
+      <!-- Mobile icon (shown in mobile mode) -->
+      <svg class="vt-icon-mobile" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:15px;height:15px">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+      </svg>
+      <!-- Desktop icon (shown in desktop mode) -->
+      <svg class="vt-icon-desktop" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:15px;height:15px;display:none">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+      </svg>
+      <span class="vt-label-mobile">Desktop View</span>
+      <span class="vt-label-desktop">Mobile View</span>
+    </button>
+    <span id="syncStatus" style="font-size:12px;color:rgba(255,255,255,0.6)">● กำลังเชื่อมต่อ...</span>
+  </div>
 </nav>
 
 <!-- ========== PAGE: FORM ========== -->
@@ -985,7 +1066,7 @@
             <input type="text" id="addressSub" placeholder="ตำบล / อำเภอ">
           </div>
           <div class="form-group">
-            <label>จังหวัด</label>
+            <label>จังหวัด <span class="req">*</span></label>
             <input type="text" id="addressProv" placeholder="จังหวัด">
           </div>
         </div>
@@ -1224,7 +1305,7 @@ addPaintRow();
         </div>
       </div>
       <div class="value-field">
-        <label>มูลค่าสี เฉพาะวัสดุสี (บาท)</label>
+        <label>มูลค่าสี เฉพาะวัสดุสี (บาท) <span style="color:var(--red)">*</span></label>
         <div class="value-input-wrap">
           <input type="number" id="paintValue" placeholder="0.00" min="0">
           <span>฿</span>
@@ -1404,14 +1485,14 @@ addCompRow();
     <table class="records-table">
       <thead>
         <tr>
-          <th>#</th>
+          <th style="width:32px;text-align:center">#</th>
           <th>สาขา / PC</th>
           <th>ชื่อโครงการ</th>
           <th>ประเภท</th>
-          <th>มูลค่าสี (฿)</th>
+          <th style="white-space:nowrap;min-width:90px">มูลค่าสี (฿)</th>
           <th>ไฟล์แนบ</th>
           <th>หมายเหตุ</th>
-          <th>วันที่</th>
+          <th style="white-space:nowrap">วันที่</th>
           <th></th>
         </tr>
       </thead>
@@ -1554,6 +1635,15 @@ db.ref('.info/connected').on('value', snap => {
 // ========== DATA LAYER ==========
 let _records = [];
 let _currentRecord = null;
+
+// ========== MULTI-FILE HELPER ==========
+// รองรับทั้ง format เก่า (fileURL/fileName) และ format ใหม่ (files[])
+function getRecordFiles(r) {
+  if (!r) return [];
+  if (r.files && Array.isArray(r.files) && r.files.length > 0) return r.files;
+  if (r.fileURL && r.fileName) return [{ url: r.fileURL, name: r.fileName, size: r.fileSize || '', type: r.fileType || '' }];
+  return [];
+}
 
 // Real-time listener — อัปเดตทุกครั้งที่มีการเปลี่ยนแปลง
 REF.orderByChild('submittedAt').on('value', snap => {
@@ -1822,6 +1912,15 @@ function submitForm() {
   check('branchName',  'ชื่อสาขา', true);
   check('pcName',      'ชื่อ PC / Sales');
   check('projectName', 'ชื่อโครงการ');
+  check('addressProv', 'จังหวัด');
+
+  // ---- บังคับกรอก มูลค่าสี ----
+  const paintValEl = document.getElementById('paintValue');
+  if (!paintValEl || !paintValEl.value || parseFloat(paintValEl.value) <= 0) {
+    errors.push('มูลค่าสี เฉพาะวัสดุสี');
+    markFieldError(paintValEl, 'กรุณากรอกมูลค่าสี เฉพาะวัสดุสี (บาท)');
+    if (!firstErrEl) firstErrEl = paintValEl;
+  }
 
   if (errors.length > 0) {
     // Show banner
@@ -1908,48 +2007,58 @@ function renderRecords() {
     const paintVal = parseFloat(r.paintValue) || 0;
     const key = r._key;
 
-    // file attachment cell
-    const fileExt = r.fileName ? r.fileName.split('.').pop().toLowerCase() : '';
-    const extIconColor = ['pdf'].includes(fileExt) ? '#DC2626' : ['xls','xlsx'].includes(fileExt) ? '#059669' : ['doc','docx'].includes(fileExt) ? '#2563EB' : '#71717A';
-    const fileCell = r.fileURL
-      ? `<div style="display:flex;flex-direction:column;gap:4px;min-width:140px">
-           <div style="display:flex;align-items:center;gap:4px">
-             <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:4px;background:${extIconColor};color:white;font-size:9px;font-weight:700;flex-shrink:0;text-transform:uppercase">${fileExt||'—'}</span>
-             <a href="${r.fileURL}" target="_blank" style="color:var(--red);font-size:12px;font-weight:600;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:110px" title="${r.fileName||'ไฟล์แนบ'}">${r.fileName||'ไฟล์แนบ'}</a>
+    // ===== MULTI-FILE CELL =====
+    const recFiles = getRecordFiles(r);
+    const fileRows = recFiles.map((f, idx) => {
+      const ext = f.name ? f.name.split('.').pop().toLowerCase() : '';
+      const clr = ['pdf'].includes(ext) ? '#DC2626' : ['xls','xlsx'].includes(ext) ? '#059669' : ['doc','docx'].includes(ext) ? '#2563EB' : '#71717A';
+      return `<div style="display:flex;align-items:center;gap:4px;padding:3px 0;border-bottom:1px solid var(--gray-100)">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:3px;background:${clr};color:white;font-size:8px;font-weight:700;flex-shrink:0;text-transform:uppercase">${ext||'—'}</span>
+        <a href="${f.url}" target="_blank" style="color:var(--gray-700);font-size:11.5px;font-weight:500;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:110px;flex:1" title="${f.name||'ไฟล์แนบ'}">${f.name||'ไฟล์แนบ'}</a>
+        <button onclick="removeFile('${key}',${idx})" title="ลบไฟล์" style="background:none;border:none;cursor:pointer;color:var(--gray-300);padding:1px;display:inline-flex;align-items:center;transition:color 0.2s;flex-shrink:0" onmouseover="this.style.color='#DC2626'" onmouseout="this.style.color='var(--gray-300)'">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:13px;height:13px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>`;
+    }).join('');
+
+    // ปุ่มดาวน์โหลดแยกตามไฟล์ (แสดงพร้อมกับปุ่มเพิ่มไฟล์ที่แถวล่าง)
+    const downloadBtns = recFiles.map((f, idx) => {
+      const ext = f.name ? f.name.split('.').pop().toLowerCase() : '';
+      return `<button onclick="exportSingleFile('${key}',${idx})" title="ดาวน์โหลด: ${f.name||'ไฟล์แนบ'}"
+        style="display:inline-flex;align-items:center;gap:3px;padding:4px 9px;border:1.5px solid #BFDBFE;border-radius:6px;background:#EFF6FF;color:#2563EB;font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;white-space:nowrap"
+        onmouseover="this.style.background='#DBEAFE';this.style.borderColor='#93C5FD'"
+        onmouseout="this.style.background='#EFF6FF';this.style.borderColor='#BFDBFE'">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:12px;height:12px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+        ${recFiles.length > 1 ? ext.toUpperCase()||'ไฟล์'+(idx+1) : 'Export'}
+      </button>`;
+    }).join('');
+
+    const fileCell = `<div id="uploadWrap_${key}" style="min-width:140px;max-width:190px">
+      ${recFiles.length > 0
+        ? `<div style="margin-bottom:4px">
+             <span style="font-size:11px;color:#059669;font-weight:600;background:#ECFDF5;padding:1px 7px;border-radius:10px;border:1px solid #A7F3D0">${recFiles.length} ไฟล์</span>
            </div>
-           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-             <span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;color:#059669;font-weight:600;background:#ECFDF5;padding:2px 7px;border-radius:10px;border:1px solid #A7F3D0">
-               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:10px;height:10px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-               อัพโหลดแล้ว
-             </span>
-             <button onclick="removeFile('${key}')" title="ลบไฟล์" style="background:none;border:none;cursor:pointer;color:var(--gray-400);font-size:12px;line-height:1;padding:0;display:inline-flex;align-items:center;gap:3px;transition:color 0.2s" onmouseover="this.style.color='#DC2626'" onmouseout="this.style.color='var(--gray-400)'">
-               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:12px;height:12px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-               ลบ
-             </button>
-           </div>
-           <div style="margin-top:4px">
-             <button onclick="exportSingleFile('${key}')" title="ดาวน์โหลดไฟล์แนบ" style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;background:#1D4ED8;color:white;border:none;border-radius:6px;font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.2s" onmouseover="this.style.background='#1E40AF'" onmouseout="this.style.background='#1D4ED8'">
-               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:12px;height:12px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-               Export ไฟล์แนบ
-             </button>
-           </div>
-         </div>`
-      : `<div id="uploadWrap_${key}" style="min-width:120px">
-           <label id="uploadLabel_${key}" style="display:inline-flex;align-items:center;gap:5px;cursor:pointer;padding:5px 10px;border:1.5px dashed var(--gray-300);border-radius:6px;font-size:12px;color:var(--gray-500);background:var(--gray-50);transition:all 0.2s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--gray-300)';this.style.color='var(--gray-500)'">
-             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:13px;height:13px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-             แนบไฟล์
-             <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.png" style="display:none" onchange="uploadFile(event,'${key}')">
-           </label>
-         </div>`;
+           <div style="margin-bottom:5px">${fileRows}</div>`
+        : ''}
+      <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:2px">
+        <label id="uploadLabel_${key}" style="display:inline-flex;align-items:center;gap:4px;cursor:pointer;padding:4px 9px;border:1.5px dashed var(--gray-300);border-radius:6px;font-size:11.5px;color:var(--gray-500);background:var(--gray-50);transition:all 0.2s;white-space:nowrap" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--gray-300)';this.style.color='var(--gray-500)'">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:12px;height:12px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          ${recFiles.length > 0 ? 'เพิ่มไฟล์' : 'แนบไฟล์'}
+          <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.png" style="display:none" onchange="uploadFile(event,'${key}')">
+        </label>
+        ${downloadBtns}
+      </div>
+    </div>`;
 
     // note cell
     const noteVal = r.note || '';
+    const isDesktop = document.body.classList.contains('view-desktop');
     const noteCell = `<div style="position:relative">
-      <textarea onblur="saveNote('${key}',this.value)" style="width:180px;min-height:38px;resize:vertical;font-size:12.5px;padding:6px 8px;border:1.5px solid var(--gray-200);border-radius:6px;font-family:inherit;background:var(--gray-50);color:var(--gray-900)" placeholder="พิมพ์หมายเหตุ...">${noteVal}</textarea>
+      <textarea onblur="saveNote('${key}',this.value)" style="width:${isDesktop?'220':'180'}px;min-height:38px;resize:vertical;font-size:12.5px;padding:6px 8px;border:1.5px solid var(--gray-200);border-radius:6px;font-family:inherit;background:var(--gray-50);color:var(--gray-900)" placeholder="พิมพ์หมายเหตุ...">${noteVal}</textarea>
     </div>`;
 
     return `<tr>
-      <td style="color:var(--gray-400);font-size:12px">${i+1}</td>
+      <td style="color:var(--gray-400);font-size:12px;white-space:nowrap;min-width:24px;text-align:center">${i+1}</td>
       <td>
         <div style="font-size:13px;font-weight:600;color:var(--gray-900)">${r.branchName || '-'}</div>
         <div class="project-meta">${r.pcName || ''} ${r.pcPhone ? '| '+r.pcPhone : ''}</div>
@@ -1959,7 +2068,7 @@ function renderRecords() {
         <div class="project-meta">${[r.addressSub, r.addressProv].filter(Boolean).join(', ') || ''}</div>
       </td>
       <td><span class="proj-type-chip">${r.projectType || '-'}</span></td>
-      <td style="font-weight:600;color:var(--red-dark)">${paintVal > 0 ? paintVal.toLocaleString('th-TH') : '-'}</td>
+      <td style="font-weight:600;color:var(--red-dark);white-space:nowrap;min-width:80px">${paintVal > 0 ? paintVal.toLocaleString('th-TH') : '-'}</td>
       <td style="white-space:nowrap">${fileCell}</td>
       <td>${noteCell}</td>
       <td class="date-cell">${dateStr}</td>
@@ -2211,7 +2320,7 @@ function deleteRecord(key) {
     .catch(err => showToast('ลบไม่สำเร็จ: ' + err.message, 'error'));
 }
 
-// ========== UPLOAD FILE (Base64 → Realtime DB, ไม่ใช้ Storage) ==========
+// ========== UPLOAD FILE (Base64 → Realtime DB, รองรับหลายไฟล์) ==========
 function uploadFile(event, key) {
   const file = event.target.files[0];
   if (!file) return;
@@ -2227,50 +2336,41 @@ function uploadFile(event, key) {
   const sizeKB = (file.size / 1024).toFixed(0);
   const sizeStr = file.size > 1024*1024 ? sizeMB + ' MB' : sizeKB + ' KB';
 
-  // Helper: re-query wrap from DOM (เพื่อหลีกเลี่ยง stale reference หลัง renderRecords ทำงาน)
   const getWrap = () => document.getElementById('uploadWrap_' + key);
 
-  const showUploading = () => {
-    const wrap = getWrap();
-    if (!wrap) return;
-    wrap.innerHTML = `
-      <div style="display:flex;flex-direction:column;gap:5px;min-width:140px">
-        <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--gray-700);font-weight:500">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:13px;height:13px;color:var(--red);animation:spin 1s linear infinite"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:115px" title="${file.name}">${file.name}</span>
-        </div>
-        <div style="height:4px;background:var(--gray-200);border-radius:4px;overflow:hidden">
-          <div id="uploadBar_${key}" style="height:100%;width:60%;background:var(--red);border-radius:4px;transition:width 0.5s"></div>
-        </div>
-        <span style="font-size:11px;color:var(--gray-400)">${sizeStr} — กำลังบันทึก...</span>
-      </div>`;
-  };
-  showUploading();
+  // แสดง spinner ใน label แทน
+  const origLabelHTML = getWrap()?.querySelector(`#uploadLabel_${key}`)?.outerHTML || '';
+  const labelEl = document.getElementById('uploadLabel_' + key);
+  if (labelEl) {
+    labelEl.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:12px;height:12px;color:var(--red);animation:spin 1s linear infinite"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> กำลังอัพโหลด...`;
+    labelEl.style.pointerEvents = 'none';
+  }
 
   const reader = new FileReader();
   reader.onload = function(e) {
-    const base64Data = e.target.result; // data:mime;base64,....
+    const base64Data = e.target.result;
 
-    // Update progress bar (re-query ทุกครั้ง เพราะ DOM อาจถูก rebuild)
-    const barEl = document.getElementById('uploadBar_' + key);
-    if (barEl) barEl.style.width = '90%';
+    // ดึง files[] เดิมจาก record ปัจจุบัน
+    const r = _records.find(x => x._key === key);
+    const existingFiles = getRecordFiles(r);
+    const newFileObj = { url: base64Data, name: file.name, size: sizeStr, type: file.type };
+    const updatedFiles = [...existingFiles, newFileObj];
 
     REF.child(key).update({
-      fileURL: base64Data,
-      fileName: file.name,
-      fileSize: sizeStr,
-      fileType: file.type
+      files: updatedFiles,
+      // clear old single-file fields เพื่อหลีกเลี่ยง duplication
+      fileURL: null, fileName: null, fileSize: null, fileType: null
     }).then(() => {
-      // *** สำเร็จ: Firebase listener จะ fire และ renderRecords() จะแสดง "อัพโหลดแล้ว" badge เอง ***
-      showToast('Upload สำเร็จ ✓', 'success');
+      showToast(`Upload สำเร็จ: ${file.name} ✓`, 'success');
     }).catch(err => {
-      // Re-query wrap ใหม่ เพราะอาจถูก rebuild ระหว่าง async ทำงาน
-      const freshWrap = getWrap();
       const errMsg = err.code === 'PERMISSION_DENIED'
         ? 'ไม่มีสิทธิ์เขียน — กรุณาตรวจสอบ Firebase Rules'
         : err.message;
-      if (freshWrap) freshWrap.innerHTML = `
-        <div style="display:flex;flex-direction:column;gap:4px">
+      const freshWrap = getWrap();
+      if (freshWrap) {
+        const errDiv = document.createElement('div');
+        errDiv.style.cssText = 'display:flex;flex-direction:column;gap:4px';
+        errDiv.innerHTML = `
           <span style="font-size:11.5px;color:#DC2626;font-weight:600;display:flex;align-items:center;gap:4px">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:13px;height:13px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             ${errMsg}
@@ -2279,8 +2379,9 @@ function uploadFile(event, key) {
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:12px;height:12px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
             ลองใหม่
             <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.png" style="display:none" onchange="uploadFile(event,'${key}')">
-          </label>
-        </div>`;
+          </label>`;
+        freshWrap.appendChild(errDiv);
+      }
       showToast('Upload ไม่สำเร็จ: ' + errMsg, 'error');
     });
   };
@@ -2290,9 +2391,15 @@ function uploadFile(event, key) {
   reader.readAsDataURL(file);
 }
 
-function removeFile(key) {
-  if (!confirm('ต้องการลบไฟล์แนบ?')) return;
-  REF.child(key).update({ fileURL: null, fileName: null });
+function removeFile(key, idx) {
+  if (!confirm('ต้องการลบไฟล์แนบนี้?')) return;
+  const r = _records.find(x => x._key === key);
+  const files = getRecordFiles(r);
+  files.splice(idx, 1);
+  REF.child(key).update({
+    files: files.length > 0 ? files : null,
+    fileURL: null, fileName: null, fileSize: null, fileType: null
+  });
   showToast('ลบไฟล์แนบแล้ว');
 }
 
@@ -2303,23 +2410,25 @@ function saveNote(key, value) {
 
 
 // ========== EXPORT SINGLE FILE ==========
-function exportSingleFile(key) {
+function exportSingleFile(key, idx) {
   requirePassword(() => {
     const r = _records.find(x => x._key === key);
-    if (!r || !r.fileURL || !r.fileName) { showToast('ไม่พบไฟล์แนบ', 'error'); return; }
+    const files = getRecordFiles(r);
+    const f = (idx !== undefined && idx !== null) ? files[idx] : files[0];
+    if (!f || !f.url) { showToast('ไม่พบไฟล์แนบ', 'error'); return; }
     const a = document.createElement('a');
-    a.href = r.fileURL;
+    a.href = f.url;
     const prefix = (r.projectName || 'ไฟล์แนบ').replace(/[\\/:*?"<>|]/g, '_').slice(0, 40);
-    a.download = prefix + '_' + r.fileName;
+    a.download = prefix + '_' + f.name;
     a.click();
-    showToast('Export ไฟล์แนบสำเร็จ: ' + r.fileName, 'success');
+    showToast('Export ไฟล์แนบสำเร็จ: ' + f.name, 'success');
   });
 }
 
 // ========== UPDATE FILE ATTACH COUNT ==========
 function updateFileAttachCount() {
   const records = getRecords();
-  const count = records.filter(r => r.fileURL && r.fileName).length;
+  const count = records.filter(r => getRecordFiles(r).length > 0).length;
   const el = document.getElementById('fileAttachCount');
   if (el) el.textContent = count;
 }
@@ -2331,7 +2440,7 @@ async function exportAllFiles() {
 
 async function _doExportAllFiles() {
   const records = getRecords();
-  const withFiles = records.filter(r => r.fileURL && r.fileName);
+  const withFiles = records.filter(r => getRecordFiles(r).length > 0);
   if (!withFiles.length) { showToast('ไม่มีไฟล์แนบในระบบ', 'error'); return; }
 
   const btn = document.getElementById('exportFilesBtn');
@@ -2343,28 +2452,26 @@ async function _doExportAllFiles() {
 
   try {
     const zip = new JSZip();
-    // Track duplicate filenames
     const nameCount = {};
+    let totalFiles = 0;
 
     withFiles.forEach((r, i) => {
-      let name = r.fileName || ('ไฟล์แนบ_' + (i+1));
-      // Make unique name if duplicate
-      if (nameCount[name] !== undefined) {
-        nameCount[name]++;
-        const dot = name.lastIndexOf('.');
-        if (dot > -1) name = name.slice(0, dot) + '_' + nameCount[name] + name.slice(dot);
-        else name = name + '_' + nameCount[name];
-      } else {
-        nameCount[name] = 0;
-      }
-
-      // Prefix with project name for easy reference
-      const prefix = (r.projectName || ('รายการ_' + (i+1))).replace(/[\\/:*?"<>|]/g, '_').slice(0, 40);
-      const finalName = prefix + '_' + name;
-
-      // fileURL is base64 data URL: "data:mime;base64,XXXXX"
-      const base64 = r.fileURL.split(',')[1];
-      if (base64) zip.file(finalName, base64, { base64: true });
+      const files = getRecordFiles(r);
+      const prefix = (r.projectName || ('รายการ_' + (i+1))).replace(/[\\/:*?"<>|]/g, '_').slice(0, 35);
+      files.forEach((f, fi) => {
+        let name = f.name || ('ไฟล์แนบ_' + (fi+1));
+        const key = prefix + '_' + name;
+        if (nameCount[key] !== undefined) {
+          nameCount[key]++;
+          const dot = name.lastIndexOf('.');
+          name = dot > -1 ? name.slice(0, dot) + '_' + nameCount[key] + name.slice(dot) : name + '_' + nameCount[key];
+        } else {
+          nameCount[key] = 0;
+        }
+        const finalName = prefix + (files.length > 1 ? '_' + (fi+1) : '') + '_' + name;
+        const base64 = f.url ? f.url.split(',')[1] : null;
+        if (base64) { zip.file(finalName, base64, { base64: true }); totalFiles++; }
+      });
     });
 
     const now = new Date();
@@ -2376,7 +2483,7 @@ async function _doExportAllFiles() {
     a.download = `Beger_FileAttachments_${dateStr}.zip`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast(`Export สำเร็จ: ${withFiles.length} ไฟล์`, 'success');
+    showToast(`Export สำเร็จ: ${totalFiles} ไฟล์ (${withFiles.length} รายการ)`, 'success');
   } catch (err) {
     showToast('Export ไม่สำเร็จ: ' + err.message, 'error');
   } finally {
@@ -2410,6 +2517,9 @@ function _doExportExcel() {
   const rows = records.map((r, i) => {
     const d = new Date(r.submittedAt);
     const dateStr = d.toLocaleDateString('th-TH', { day:'2-digit', month:'2-digit', year:'numeric' });
+    const rFiles = getRecordFiles(r);
+    const fileNames = rFiles.map(f => f.name || '').filter(Boolean).join(', ');
+    const fileURLs = rFiles.map(f => f.url || '').filter(Boolean).join('\n');
     return [
       i+1, dateStr,
       r.branchName, r.pcName, r.pcPhone,
@@ -2421,7 +2531,7 @@ function _doExportExcel() {
       (r.compItems||[]).map(c=>[c.brand,c.type,c.model,c.qty,c.unit,c.price?c.price+'฿':''].filter(Boolean).join('|')).join('\n'),
       r.projectValue||'', r.paintValue||'',
       r.areaInside||'', r.areaOutside||'', r.floors||'',
-      r.fileName||'', r.fileURL||'',
+      fileNames, fileURLs,
       r.remarks||''
     ];
   });
@@ -2623,6 +2733,32 @@ function spConfirm() {
   }
 }
 
+// ========== VIEW MODE TOGGLE (Mobile ↔ Desktop) ==========
+function toggleViewMode() {
+  const isDesktop = document.body.classList.toggle('view-desktop');
+  localStorage.setItem('beger_view_mode', isDesktop ? 'desktop' : 'mobile');
+  _applyViewToggleIcon(isDesktop);
+  if (document.getElementById('page-records').classList.contains('active')) {
+    renderRecords();
+  }
+}
+
+function _applyViewToggleIcon(isDesktop) {
+  const mobileIcon  = document.querySelector('.vt-icon-mobile');
+  const desktopIcon = document.querySelector('.vt-icon-desktop');
+  if (mobileIcon)  mobileIcon.style.display  = isDesktop ? 'none'  : 'block';
+  if (desktopIcon) desktopIcon.style.display = isDesktop ? 'block' : 'none';
+}
+
+// Restore view mode from localStorage on load
+(function initViewMode() {
+  const saved = localStorage.getItem('beger_view_mode');
+  if (saved === 'desktop') {
+    document.body.classList.add('view-desktop');
+    _applyViewToggleIcon(true);
+  }
+})();
+
 // ========== PASSWORD MODAL ==========
 const EXPORT_PASSWORD = '12345';
 let _pwdCallback = null;
@@ -2696,7 +2832,7 @@ function pwdToggleShow() {
 // ========== TOAST ==========
 // ========== AUTO-CLEAR FIELD ERRORS ON INPUT ==========
 function initFieldErrorClear() {
-  ['branchName','pcName','pcPhone','projectName'].forEach(id => {
+  ['branchName','pcName','pcPhone','projectName','paintValue','addressProv'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     el.addEventListener('input', function() {
