@@ -775,6 +775,121 @@
   .sp-btn-red:hover:not(:disabled) { background: var(--red-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(200,16,46,0.3); }
   @keyframes spSpin { to { transform: rotate(360deg); } }
 
+  /* ===== EXPORT PREVIEW MODAL ===== */
+  #exportPreviewModal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s;
+  }
+  #exportPreviewModal.open { opacity: 1; pointer-events: all; }
+  .ep-box {
+    background: white;
+    border-radius: var(--radius-lg);
+    max-width: 560px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+    transform: scale(0.93) translateY(20px);
+    transition: transform 0.25s cubic-bezier(.34,1.56,.64,1);
+  }
+  #exportPreviewModal.open .ep-box { transform: scale(1) translateY(0); }
+  .ep-header {
+    background: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%);
+    padding: 18px 22px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    display: flex; align-items: center; gap: 12px; color: white;
+  }
+  .ep-header-icon {
+    width: 38px; height: 38px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .ep-header h2 { font-family: 'Kanit', sans-serif; font-size: 16px; font-weight: 700; }
+  .ep-header p { font-size: 12px; opacity: 0.8; margin-top: 1px; }
+  .ep-header-close {
+    margin-left: auto;
+    background: rgba(255,255,255,0.18); border: none; color: white;
+    width: 28px; height: 28px; border-radius: 50%;
+    cursor: pointer; font-size: 17px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s; flex-shrink: 0;
+  }
+  .ep-header-close:hover { background: rgba(255,255,255,0.35); }
+  .ep-info-bar {
+    background: #EFF6FF; border-bottom: 1px solid #BFDBFE;
+    padding: 9px 22px; font-size: 12.5px; color: #1E40AF; font-weight: 500;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .ep-body { padding: 20px 22px 8px; }
+  .ep-file-card {
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .ep-file-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-bottom: 1px solid var(--gray-100);
+    font-size: 13px;
+  }
+  .ep-file-row:last-child { border-bottom: none; }
+  .ep-file-row:hover { background: var(--gray-50); }
+  .ep-ext-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 6px;
+    font-size: 9px; font-weight: 800; color: white;
+    flex-shrink: 0; text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .ep-file-name { font-weight: 600; color: var(--gray-900); flex: 1; word-break: break-all; }
+  .ep-file-meta { font-size: 11.5px; color: var(--gray-400); white-space: nowrap; }
+  .ep-img-preview {
+    max-width: 100%; max-height: 220px; object-fit: contain;
+    display: block; margin: 10px auto 4px;
+    border-radius: 6px; border: 1px solid var(--gray-100);
+  }
+  .ep-summary-row {
+    display: flex; align-items: baseline; gap: 6px;
+    padding: 6px 0; border-bottom: 1px solid var(--gray-100);
+    font-size: 13px;
+  }
+  .ep-summary-row:last-child { border-bottom: none; }
+  .ep-slbl { font-weight: 600; color: var(--gray-500); min-width: 120px; font-size: 12.5px; flex-shrink: 0; }
+  .ep-sval { color: var(--gray-900); flex: 1; }
+  .ep-footer {
+    position: sticky; bottom: 0;
+    background: white;
+    border-top: 2px solid var(--gray-200);
+    padding: 13px 22px 16px;
+    display: flex; gap: 10px; justify-content: flex-end; align-items: center;
+  }
+  .ep-footer-note { font-size: 12px; color: var(--gray-400); flex: 1; }
+  .ep-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 22px; border-radius: var(--radius-sm);
+    font-family: 'Sarabun', sans-serif; font-size: 14px;
+    font-weight: 600; cursor: pointer; border: none;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .ep-btn-outline {
+    background: white; color: var(--gray-700);
+    border: 1.5px solid var(--gray-300);
+  }
+  .ep-btn-outline:hover { border-color: var(--gray-500); background: var(--gray-50); }
+  .ep-btn-blue { background: #2563EB; color: white; }
+  .ep-btn-blue:hover { background: #1D4ED8; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+  .ep-btn-blue:active { transform: none; }
+
   /* ===== VALIDATION ERROR EFFECTS ===== */
   @keyframes shake {
     0%,100% { transform: translateX(0); }
@@ -1557,6 +1672,38 @@ addCompRow();
       <button class="sp-btn sp-btn-red" id="spConfirmBtn" onclick="spConfirm()">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
         ยืนยันบันทึก
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPORT PREVIEW MODAL -->
+<div id="exportPreviewModal">
+  <div class="ep-box">
+    <div class="ep-header">
+      <div class="ep-header-icon">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:20px;height:20px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+      </div>
+      <div>
+        <h2 id="epTitle">พรีวิวไฟล์ก่อนดาวน์โหลด</h2>
+        <p id="epSubtitle">ตรวจสอบไฟล์ที่จะดาวน์โหลดก่อนยืนยัน</p>
+      </div>
+      <button class="ep-header-close" onclick="epClose()" title="ปิด">×</button>
+    </div>
+    <div class="ep-info-bar">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <span id="epInfoText">กด <strong>"ยืนยัน ดาวน์โหลด"</strong> เพื่อเริ่มดาวน์โหลด</span>
+    </div>
+    <div class="ep-body" id="epBody"></div>
+    <div class="ep-footer">
+      <span class="ep-footer-note" id="epFooterNote"></span>
+      <button class="ep-btn ep-btn-outline" onclick="epClose()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        ยกเลิก
+      </button>
+      <button class="ep-btn ep-btn-blue" id="epConfirmBtn" onclick="epConfirm()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        ยืนยัน ดาวน์โหลด
       </button>
     </div>
   </div>
@@ -2409,6 +2556,45 @@ function saveNote(key, value) {
 }
 
 
+// ========== EXPORT PREVIEW MODAL ==========
+let _epPendingFn = null;
+
+function showExportPreview(title, subtitle, infoText, bodyHtml, footerNote, confirmLabel, confirmFn) {
+  _epPendingFn = confirmFn;
+  document.getElementById('epTitle').textContent    = title;
+  document.getElementById('epSubtitle').textContent = subtitle;
+  document.getElementById('epInfoText').innerHTML   = infoText;
+  document.getElementById('epBody').innerHTML       = bodyHtml;
+  document.getElementById('epFooterNote').textContent = footerNote || '';
+  const btn = document.getElementById('epConfirmBtn');
+  if (btn) {
+    btn.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> ${confirmLabel || 'ยืนยัน ดาวน์โหลด'}`;
+    btn.disabled = false;
+  }
+  document.getElementById('exportPreviewModal').classList.add('open');
+}
+
+function epClose() {
+  document.getElementById('exportPreviewModal').classList.remove('open');
+  _epPendingFn = null;
+}
+
+function epConfirm() {
+  if (!_epPendingFn) return;
+  const fn = _epPendingFn;
+  _epPendingFn = null;
+  document.getElementById('exportPreviewModal').classList.remove('open');
+  fn();
+}
+
+function _extColor(ext) {
+  if (['pdf'].includes(ext)) return '#DC2626';
+  if (['xls','xlsx'].includes(ext)) return '#059669';
+  if (['doc','docx'].includes(ext)) return '#2563EB';
+  if (['jpg','jpeg','png','gif','webp'].includes(ext)) return '#7C3AED';
+  return '#71717A';
+}
+
 // ========== EXPORT SINGLE FILE ==========
 function exportSingleFile(key, idx) {
   requirePassword(() => {
@@ -2416,12 +2602,47 @@ function exportSingleFile(key, idx) {
     const files = getRecordFiles(r);
     const f = (idx !== undefined && idx !== null) ? files[idx] : files[0];
     if (!f || !f.url) { showToast('ไม่พบไฟล์แนบ', 'error'); return; }
-    const a = document.createElement('a');
-    a.href = f.url;
+
+    const ext = f.name ? f.name.split('.').pop().toLowerCase() : '';
+    const clr = _extColor(ext);
+    const isImg = ['jpg','jpeg','png','gif','webp'].includes(ext);
+
+    // build file name for download
     const prefix = (r.projectName || 'ไฟล์แนบ').replace(/[\\/:*?"<>|]/g, '_').slice(0, 40);
-    a.download = prefix + '_' + f.name;
-    a.click();
-    showToast('Export ไฟล์แนบสำเร็จ: ' + f.name, 'success');
+    const dlName = prefix + '_' + f.name;
+
+    const bodyHtml = `
+      <div class="ep-file-card">
+        ${isImg ? `<img src="${f.url}" class="ep-img-preview" alt="preview">` : ''}
+        <div class="ep-file-row">
+          <span class="ep-ext-badge" style="background:${clr}">${ext || '?'}</span>
+          <div style="flex:1;min-width:0">
+            <div class="ep-file-name">${f.name || 'ไฟล์แนบ'}</div>
+            ${f.size ? `<div class="ep-file-meta">ขนาด: ${f.size}</div>` : ''}
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <div class="ep-summary-row"><span class="ep-slbl">โครงการ</span><span class="ep-sval" style="font-weight:600">${r.projectName || '-'}</span></div>
+        <div class="ep-summary-row"><span class="ep-slbl">สาขา</span><span class="ep-sval">${r.branchName || '-'}</span></div>
+        <div class="ep-summary-row"><span class="ep-slbl">ชื่อไฟล์ที่บันทึก</span><span class="ep-sval" style="word-break:break-all;font-size:12px;color:var(--gray-500)">${dlName}</span></div>
+      </div>`;
+
+    showExportPreview(
+      'พรีวิวไฟล์แนบ',
+      'ตรวจสอบไฟล์ก่อนดาวน์โหลด',
+      'กด <strong>"ยืนยัน ดาวน์โหลด"</strong> เพื่อบันทึกไฟล์ลงเครื่อง',
+      bodyHtml,
+      '* ไฟล์จะถูกดาวน์โหลดหลังกดยืนยัน',
+      'ยืนยัน ดาวน์โหลด',
+      () => {
+        const a = document.createElement('a');
+        a.href = f.url;
+        a.download = dlName;
+        a.click();
+        showToast('Export ไฟล์แนบสำเร็จ: ' + f.name, 'success');
+      }
+    );
   });
 }
 
@@ -2435,14 +2656,66 @@ function updateFileAttachCount() {
 
 // ========== EXPORT ALL ATTACHED FILES AS ZIP ==========
 async function exportAllFiles() {
-  requirePassword(() => _doExportAllFiles());
+  requirePassword(() => {
+    const records = getRecords();
+    const withFiles = records.filter(r => getRecordFiles(r).length > 0);
+    if (!withFiles.length) { showToast('ไม่มีไฟล์แนบในระบบ', 'error'); return; }
+
+    let totalFiles = 0;
+    const fileListRows = withFiles.map((r, i) => {
+      const files = getRecordFiles(r);
+      totalFiles += files.length;
+      const fileItems = files.map(f => {
+        const ext = f.name ? f.name.split('.').pop().toLowerCase() : '';
+        const clr = _extColor(ext);
+        return `<div class="ep-file-row" style="padding:7px 14px">
+          <span class="ep-ext-badge" style="background:${clr};width:26px;height:26px;font-size:8px">${ext || '?'}</span>
+          <div style="flex:1;min-width:0">
+            <div class="ep-file-name" style="font-size:12.5px">${f.name || 'ไฟล์แนบ'}</div>
+            ${f.size ? `<div class="ep-file-meta">${f.size}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+      return `<div style="padding:8px 14px 2px;background:var(--gray-50);border-bottom:1px solid var(--gray-200)">
+        <span style="font-size:11.5px;font-weight:700;color:var(--gray-500)">${i+1}. ${r.projectName || '-'}</span>
+        <span style="font-size:11px;color:var(--gray-400);margin-left:6px">${r.branchName || ''}</span>
+      </div>${fileItems}`;
+    }).join('');
+
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+    const zipName = `Beger_FileAttachments_${dateStr}.zip`;
+
+    const bodyHtml = `
+      <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+        <div style="flex:1;min-width:100px;background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:8px;padding:10px 14px;text-align:center">
+          <div style="font-family:Kanit,sans-serif;font-size:22px;font-weight:700;color:#2563EB">${totalFiles}</div>
+          <div style="font-size:11.5px;color:#1E40AF;font-weight:500">ไฟล์ทั้งหมด</div>
+        </div>
+        <div style="flex:1;min-width:100px;background:#F0FDF4;border:1.5px solid #A7F3D0;border-radius:8px;padding:10px 14px;text-align:center">
+          <div style="font-family:Kanit,sans-serif;font-size:22px;font-weight:700;color:#059669">${withFiles.length}</div>
+          <div style="font-size:11.5px;color:#065F46;font-weight:500">รายการโครงการ</div>
+        </div>
+        <div style="flex:2;min-width:140px;background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:8px;padding:10px 14px">
+          <div style="font-size:11px;color:var(--gray-400);font-weight:600;margin-bottom:2px">ชื่อไฟล์ ZIP</div>
+          <div style="font-size:12px;font-weight:600;color:var(--gray-900);word-break:break-all">${zipName}</div>
+        </div>
+      </div>
+      <div class="ep-file-card" style="max-height:280px;overflow-y:auto">${fileListRows}</div>`;
+
+    showExportPreview(
+      'พรีวิวไฟล์ทั้งหมด',
+      `รวม ${totalFiles} ไฟล์ จาก ${withFiles.length} รายการโครงการ`,
+      'กด <strong>"ยืนยัน ดาวน์โหลด ZIP"</strong> เพื่อสร้างและดาวน์โหลดไฟล์ ZIP',
+      bodyHtml,
+      '* ระบบจะรวมไฟล์ทั้งหมดเป็น ZIP แล้วดาวน์โหลด',
+      'ยืนยัน ดาวน์โหลด ZIP',
+      () => _doExportAllFiles(withFiles, zipName)
+    );
+  });
 }
 
-async function _doExportAllFiles() {
-  const records = getRecords();
-  const withFiles = records.filter(r => getRecordFiles(r).length > 0);
-  if (!withFiles.length) { showToast('ไม่มีไฟล์แนบในระบบ', 'error'); return; }
-
+async function _doExportAllFiles(withFiles, zipName) {
   const btn = document.getElementById('exportFilesBtn');
   const origHTML = btn ? btn.innerHTML : '';
   if (btn) {
@@ -2474,13 +2747,11 @@ async function _doExportAllFiles() {
       });
     });
 
-    const now = new Date();
-    const dateStr = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
     const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Beger_FileAttachments_${dateStr}.zip`;
+    a.download = zipName;
     a.click();
     URL.revokeObjectURL(url);
     showToast(`Export สำเร็จ: ${totalFiles} ไฟล์ (${withFiles.length} รายการ)`, 'success');
@@ -2492,7 +2763,44 @@ async function _doExportAllFiles() {
 }
 
 function exportExcel() {
-  requirePassword(() => _doExportExcel());
+  requirePassword(() => {
+    const records = getRecords();
+    if (!records.length) { showToast('ไม่มีข้อมูลสำหรับ Export', 'error'); return; }
+
+    const now = new Date();
+    const fname = `Beger_ProjectQuotations_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.xlsx`;
+    const withFiles = records.filter(r => getRecordFiles(r).length > 0).length;
+    const provinces = [...new Set(records.map(r => r.addressProv).filter(Boolean))];
+    const totalPaintVal = records.reduce((s, r) => s + (parseFloat(r.paintValue) || 0), 0);
+
+    const bodyHtml = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+        <div style="background:#F0FDF4;border:1.5px solid #A7F3D0;border-radius:8px;padding:10px 14px;text-align:center">
+          <div style="font-family:Kanit,sans-serif;font-size:22px;font-weight:700;color:#059669">${records.length}</div>
+          <div style="font-size:11.5px;color:#065F46;font-weight:500">รายการทั้งหมด</div>
+        </div>
+        <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:8px;padding:10px 14px;text-align:center">
+          <div style="font-family:Kanit,sans-serif;font-size:22px;font-weight:700;color:#2563EB">${withFiles}</div>
+          <div style="font-size:11.5px;color:#1E40AF;font-weight:500">รายการที่มีไฟล์แนบ</div>
+        </div>
+      </div>
+      <div style="background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:8px;padding:12px 14px;margin-bottom:12px">
+        <div class="ep-summary-row"><span class="ep-slbl">ชื่อไฟล์</span><span class="ep-sval" style="font-weight:600;font-size:12px">${fname}</span></div>
+        <div class="ep-summary-row"><span class="ep-slbl">จำนวนจังหวัด</span><span class="ep-sval">${provinces.length} จังหวัด</span></div>
+        <div class="ep-summary-row"><span class="ep-slbl">มูลค่าสีรวม</span><span class="ep-sval" style="font-weight:700;color:var(--red-dark)">${totalPaintVal.toLocaleString('th-TH')} ฿</span></div>
+        <div class="ep-summary-row"><span class="ep-slbl">คอลัมน์</span><span class="ep-sval" style="font-size:12px;color:var(--gray-500)">28 คอลัมน์ (ข้อมูลโครงการ, สินค้า, คู่แข่ง, ไฟล์แนบ)</span></div>
+      </div>`;
+
+    showExportPreview(
+      'พรีวิว Export Excel',
+      `${records.length} รายการโครงการ`,
+      'กด <strong>"ยืนยัน Export Excel"</strong> เพื่อดาวน์โหลดไฟล์ .xlsx',
+      bodyHtml,
+      '* ข้อมูลทั้งหมดจะถูก Export เป็น Excel',
+      'ยืนยัน Export Excel',
+      () => _doExportExcel()
+    );
+  });
 }
 
 function _doExportExcel() {
